@@ -92,6 +92,15 @@ struct sUser
 	bool Delete = false;
 };
 sUser User;
+vector <sUser>VUsers;
+vector <sClient>VClientes;
+void ScreenName(string screenName)
+{
+	system("cls");
+	cout << "=========================================\n";
+	cout << "\t" << screenName << endl;
+	cout << "=========================================\n";
+}
 short ReadShortNumber(string messeg, short from, short to)
 {
 	short input;
@@ -128,7 +137,7 @@ bool SearchUser(vector <sUser>& vUsers, sUser user)
 
 	for (int i = 0; i < vUsers.size(); i++)
 	{
-		if (vUsers[i].UserName == user.UserName&& vUsers[i].Password== user.Password)
+		if (vUsers[i].UserName == user.UserName && vUsers[i].Password == user.Password)
 		{
 
 			return true;
@@ -246,7 +255,7 @@ bool SearchAndPrintCliente(vector <sClient>& vClientes)
 }
 
 
-string ConvertRecordClintesToLineWithEncryption(sClient clinte, string ClitesComma )
+string ConvertRecordClintesToLineWithEncryption(sClient clinte, string ClitesComma)
 {
 	string stClientRecord = "";
 	stClientRecord += clinte.AccounteNumber + ClitesComma;
@@ -257,17 +266,17 @@ string ConvertRecordClintesToLineWithEncryption(sClient clinte, string ClitesCom
 	Encryption(stClientRecord);
 	return stClientRecord;
 }
-string ConvertRecordUsersToLineWithEncryption(sUser user, string usersComma )
+string ConvertRecordUsersToLineWithEncryption(sUser user, string usersComma)
 {
 	string stClientRecord = "";
-	stClientRecord += user.UserName+ usersComma;
+	stClientRecord += user.UserName + usersComma;
 	stClientRecord += user.Password + usersComma;
 	stClientRecord += to_string(user.permission) + usersComma;
-	
+
 	Encryption(stClientRecord);
 	return stClientRecord;
 }
-sClient LineClintesToRecordWithDecryption(string s1, string ClitesComma )
+sClient LineClintesToRecordWithDecryption(string s1, string ClitesComma)
 {
 	sClient clinte;
 	vector <string> vRecords;
@@ -291,18 +300,18 @@ sClient LineClintesToRecordWithDecryption(string s1, string ClitesComma )
 	return clinte;
 
 }
-sUser LineUsersToRecordWithDecryption(string s1, string usersComma )
+sUser LineUsersToRecordWithDecryption(string s1, string usersComma)
 {
 	sUser user;
 	vector <string> vRecords;
 	Decryption(s1);
 	vRecords = SplitString(s1, UsersComma);
-	if (vRecords.size() >=3)
+	if (vRecords.size() >= 3)
 	{
 		user.UserName = vRecords[0];
 		user.Password = vRecords[1];
 		user.permission = stoi(vRecords[2]);
-		
+
 	}
 	else
 	{
@@ -322,7 +331,7 @@ void PrintRecord(sClient clime)
 	cout << "Phone: " << clime.Phone << endl;
 	cout << "Account Balance: " << clime.AccountBalance << endl;
 }
-void SaveStringInFile(string s1, bool saveOldString ,string FileName)
+void SaveStringInFile(string s1, bool saveOldString, string FileName)
 {
 	fstream file;
 	if (saveOldString)
@@ -341,7 +350,7 @@ void SaveStringInFile(string s1, bool saveOldString ,string FileName)
 	}
 	file.close();
 }
-void AddClint(vector <sClient>& clintes, string ClitesComma,string FileName )
+void AddClint()
 {
 
 	string AddMore = "Y";
@@ -354,12 +363,12 @@ void AddClint(vector <sClient>& clintes, string ClitesComma,string FileName )
 		cout << "\tAdd New Clients screen\n";
 		cout << "-----------------------------------------\n";
 
-		clintes.push_back(ReadClinte(clintes));
-		if (clintes.back().Name != "")
+		::VClientes.push_back(ReadClinte(::VClientes));
+		if (::VClientes.back().Name != "")
 		{
 
-			s1 = ConvertRecordClintesToLineWithEncryption(clintes.back(), ClitesComma);
-			SaveStringInFile(s1,1,FileName);
+			s1 = ConvertRecordClintesToLineWithEncryption(::VClientes.back(), ::ClitesComma);
+			SaveStringInFile(s1, 1, ::ClientsFileName);
 		}
 
 
@@ -373,7 +382,7 @@ void AddClint(vector <sClient>& clintes, string ClitesComma,string FileName )
 	system("pause>0");
 }
 
-vector <sClient> ReadFileClientsToRecord(string comma,string fileName)
+vector <sClient> ReadFileClientsToRecord(string comma, string fileName)
 {
 	vector <sClient> vClients;
 	fstream MyFile;
@@ -392,7 +401,7 @@ vector <sClient> ReadFileClientsToRecord(string comma,string fileName)
 	}
 	return vClients;
 }
-vector <sUser> ReadFileUsersToRecord(string FileName=UsersFileName,string usersComma=::UsersComma)
+vector <sUser> ReadFileUsersToRecord(string FileName = UsersFileName, string usersComma = ::UsersComma)
 {
 	vector <sUser> vUsers;
 	fstream MyFile;
@@ -405,22 +414,22 @@ vector <sUser> ReadFileUsersToRecord(string FileName=UsersFileName,string usersC
 		{
 
 
-			vUsers.push_back(LineUsersToRecordWithDecryption(Line,usersComma));
+			vUsers.push_back(LineUsersToRecordWithDecryption(Line, usersComma));
 		}
 		MyFile.close();
 	}
 	return vUsers;
 }
 
-void PrintClints(vector <sClient>& clintes)
+void PrintClints()
 {
 	system("cls");
-	printf("                                  Client LISt (%d) Client(s).                       \n", clintes.size());
+	printf("                                  Clientes LIST (%d) Client(s).                       \n", ::VClientes.size());
 	printf("_____________________________________________________________________________________________\n\n");
 	printf("Accounte Numbe  |PinCode  |Name                               |Phone         |Account Balance\n");
 	printf("_____________________________________________________________________________________________\n\n");
 
-	for (sClient& clint : clintes)
+	for (sClient& clint : ::VClientes)
 	{
 		if (clint.AccounteNumber != "")
 		{
@@ -438,10 +447,32 @@ void PrintClints(vector <sClient>& clintes)
 	cout << "Press any key to go back to Main Menue...";
 	system("pause>0");
 }
+void ListUsers(vector <sUser>& vUsers)
+{
+	printf("\n                       Users LIST (%d) User(s).                       \n", vUsers.size());
+	printf("=====================================================================\n");
+	printf(" User Name                          |Password       | Permission\n");
+	printf("=====================================================================\n");
+
+	for (sUser& user : vUsers)
+	{
+		if (user.UserName != "")
+		{
+			
+			cout <<" " << setw(35) << left << user.UserName << "|";
+			cout <<" " << setw(14) << left << user.Password << "|";
+			cout <<" " << setw(14) << left << user.permission << "\n";
+
+		}
+
+	}
+	printf("=====================================================================\n");
+	
+}
 
 
 
-vector <string> vClientesTovStrings(vector <sClient>& vClientes,string comma)
+vector <string> vClientesTovStrings(vector <sClient>& vClientes, string comma)
 {
 	vector <string> vStrings;
 	for (sClient cliente : vClientes)
@@ -453,19 +484,19 @@ vector <string> vClientesTovStrings(vector <sClient>& vClientes,string comma)
 	}
 	return vStrings;
 }
-vector <string> vUsersTovStrings(vector <sUser>& vUsers,string usersFileName ,string usersComma)
+vector <string> vUsersTovStrings(vector <sUser>& vUsers, string usersFileName, string usersComma)
 {
 	vector <string> vStrings;
 	for (sUser user : vUsers)
 	{
 		if (user.UserName != "" && user.Password != "")
 		{
-			vStrings.push_back(ConvertRecordUsersToLineWithEncryption(user,UsersComma));
+			vStrings.push_back(ConvertRecordUsersToLineWithEncryption(user, UsersComma));
 		}
 	}
 	return vStrings;
 }
-void SaveVectorInFile(vector <string> vStrings, bool SaveOldStrings , string FileName )
+void SaveVectorInFile(vector <string> vStrings, bool SaveOldStrings, string FileName)
 {
 
 	fstream file;
@@ -489,7 +520,7 @@ void SaveVectorInFile(vector <string> vStrings, bool SaveOldStrings , string Fil
 	file.close();
 
 }
-void DelateCliente(vector <sClient>& vClientes,string clienteComma, string clienteFileName)
+void DelateCliente(vector <sClient>& vClientes, string clienteComma, string clienteFileName)
 {
 	int index;
 	string YesOrNo;
@@ -556,7 +587,7 @@ void ReadForUpdateClient(sClient& client)
 	}
 
 }
-void UpdateClienteByAccountNumber(vector <sClient>& vClientes,string clienteComma,string clienteFileName)
+void UpdateClienteByAccountNumber(vector <sClient>& vClientes, string clienteComma, string clienteFileName)
 {
 
 	int index;
@@ -575,7 +606,7 @@ void UpdateClienteByAccountNumber(vector <sClient>& vClientes,string clienteComm
 			string AccountNumber = vClientes[index].AccounteNumber;
 
 			ReadForUpdateClient(vClientes[index]);
-			SaveVectorInFile(vClientesTovStrings(vClientes,clienteComma), false, clienteFileName);
+			SaveVectorInFile(vClientesTovStrings(vClientes, clienteComma), false, clienteFileName);
 
 			system("cls");
 			cout << "\tUpdated Successfully\n";
@@ -618,7 +649,7 @@ double DepositAmount(double From, double To)
 	} while (depositAmount<From || depositAmount>To);
 	return depositAmount;
 }
-void Deposit(vector <sClient>& vClientes,string comma, string FileName , int DepositFrom = 0, int DepositTo = 1000000)
+void Deposit(vector <sClient>& vClientes, string comma, string FileName, int DepositFrom = 0, int DepositTo = 1000000)
 {
 	int Index;
 	double depositAmount = 0;
@@ -665,7 +696,7 @@ double WithdrawAmount(double Balance, double From, double To)
 	} while (depositAmount < From || depositAmount>To);
 	return depositAmount;
 }
-void Withdraw(vector <sClient>& vClientes,string comma, string FileName , int WithdrawFrom = 0, int WithdrawTo = 1000000)
+void Withdraw(vector <sClient>& vClientes, string comma, string FileName, int WithdrawFrom = 0, int WithdrawTo = 1000000)
 {
 	int Index;
 	double withdrawAmount = 0;
@@ -687,7 +718,7 @@ void Withdraw(vector <sClient>& vClientes,string comma, string FileName , int Wi
 			{
 
 				vClientes[Index].AccountBalance -= withdrawAmount;
-				SaveVectorInFile(vClientesTovStrings(vClientes,comma), false, FileName);
+				SaveVectorInFile(vClientesTovStrings(vClientes, comma), false, FileName);
 				cout << "Account Number : " << vClientes[Index].AccounteNumber << endl;
 				printf("New Balance is : %.*f \n", 2, vClientes[Index].AccountBalance);
 			}
@@ -744,13 +775,13 @@ void TransactionsMenue()
 	cout << "        [4] Main Menue.\n";
 	cout << "============================================\n";
 }
-bool Transactions(vector <sClient>& vClientes,string comma, string FileName )
+bool Transactions(vector <sClient>& vClientes, string comma, string FileName)
 {
 	short Choose;
 	while (true)
 	{
 		TransactionsMenue();
-		Choose=ReadShortNumber("Choose what do you want to do ? [1 to 4] ? ",1,4);
+		Choose = ReadShortNumber("Choose what do you want to do ? [1 to 4] ? ", 1, 4);
 		switch (Choose)
 		{
 		case 1:
@@ -777,15 +808,15 @@ bool Transactions(vector <sClient>& vClientes,string comma, string FileName )
 
 void RefreshClintes(vector <sClient>& clintes)
 {
-	clintes = ReadFileClientsToRecord(::ClitesComma,::ClientsFileName);
-	SaveVectorInFile(vClientesTovStrings(clintes, ::ClitesComma),false, ClientsFileName);
+	clintes = ReadFileClientsToRecord(::ClitesComma, ::ClientsFileName);
+	SaveVectorInFile(vClientesTovStrings(clintes, ::ClitesComma), false, ClientsFileName);
 }
-void RefreshUsers(vector <sUser>& users,string FileName)
+void RefreshUsers(vector <sUser>& users, string FileName)
 {
 	users = ReadFileUsersToRecord(FileName);
 	vector <string> vs = vUsersTovStrings(users, FileName, UsersComma);
-	SaveVectorInFile(vs,false,FileName);
-	
+	SaveVectorInFile(vs, false, FileName);
+
 }
 
 void ShowMenueScreen()
@@ -802,11 +833,12 @@ void ShowMenueScreen()
 	cout << "        [4] Update Client Info.\n";
 	cout << "        [5] Find Client.\n";
 	cout << "        [6] Transactions.\n";
-	cout << "        [7] Refresh.\n";
-	cout << "        [8] Exit.\n";
+	cout << "        [7] Manage User.\n";
+	cout << "        [8] Refresh.\n";
+	cout << "        [9] Logout.\n";
 	cout << "============================================\n";
 }
-enum enMenueScreen { eShowClientList = 1, eAddNewClient = 2, eDeleteClient = 3, eUpdateClientInfo = 4, eFindClient = 5, eTransactions = 6,eManageUser=7, eRefresh = 8, eLogout = 9 };
+enum enMenueScreen { eShowClientList = 1, eAddNewClient = 2, eDeleteClient = 3, eUpdateClientInfo = 4, eFindClient = 5, eTransactions = 6, eManageUsers = 7, eRefresh = 8, eLogout = 9 };
 
 sUser ReadLoginUser(vector <sUser>& vUsers)
 {
@@ -814,11 +846,11 @@ sUser ReadLoginUser(vector <sUser>& vUsers)
 	system("cls");
 	system("color 0");
 	cout << "Enter UserName : ";
-	getline(std::cin>>ws, user.UserName);
+	getline(std::cin >> ws, user.UserName);
 	cout << "Enter Password : ";
-	getline(std::cin>>ws, user.Password);
+	getline(std::cin >> ws, user.Password);
 
-	while (!SearchUser(vUsers,user))
+	while (!SearchUser(vUsers, user))
 	{
 		cout << "Username and password error\n";
 		cout << "Enter UserName : ";
@@ -828,31 +860,67 @@ sUser ReadLoginUser(vector <sUser>& vUsers)
 	}
 	return user;
 }
+
 void PrintManageUsersMenue()
 {
+	ScreenName("Manage Users Screen");
+	cout << "\t[1] List Users.\n\t[2] Add New User.\n\t[3] Delete User.\n\t[4] Update User.\n\t[5] Find User.\n\t[6] Main Menue.\n";
+	cout << "=========================================\n";
 
 }
 bool ManageUsers()
 {
+	short choose;
+	while (true)
+	{
+		PrintManageUsersMenue();
+		choose = ReadShortNumber("Choose from 1 to 6 : ", 1, 6);
+		//[1]ListUsers. [2]AddNewUser. [3]DeleteUser [4]UpdateUser [5]FindUser [6]MainMenue
+		if (choose <= 5)
+			system("cls");
+		switch (choose)
+		{
+		case 1:
+			ListUsers(::VUsers);
+			break;
+		case 2:
+			
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 6:
+			return 0;
+			break;
+
+		}
+		cout << "Press any key to go back to Manage Users Menue...";
+		system("pause>0");
+	}
+
+
 
 }
-bool Menue(vector <sUser>& vUsers, vector<sClient> & vClintes)
+bool Menue(vector <sUser>& vUsers, vector<sClient>& vClintes)
 {
 	short Choose = 1;
 
 	while (true)
 	{
-		
+
 		ShowMenueScreen();
-		Choose=ReadShortNumber("Choose what do you want to do? [1 to 8]? ",1,8);
+		Choose = ReadShortNumber("Choose what do you want to do? [1 to 9]? ", 1, 9);
 		system("cls");
 		switch (Choose)
 		{
 		case enMenueScreen::eShowClientList:
-			PrintClints(vClintes);
+			PrintClints();
 			break;
 		case enMenueScreen::eAddNewClient:
-			AddClint(vClintes, ::ClitesComma, ::ClientsFileName);
+			AddClint();
 			break;
 		case enMenueScreen::eDeleteClient:
 			DelateCliente(vClintes, ::ClitesComma, ::ClientsFileName);
@@ -871,8 +939,8 @@ bool Menue(vector <sUser>& vUsers, vector<sClient> & vClintes)
 		case eRefresh:
 			RefreshClintes(vClintes);
 			break;
-		case enMenueScreen::eManageUser:
-
+		case enMenueScreen::eManageUsers:
+			ManageUsers();
 			break;
 		case enMenueScreen::eLogout:
 
@@ -885,24 +953,20 @@ bool Menue(vector <sUser>& vUsers, vector<sClient> & vClintes)
 
 bool Bank()
 {
-	vector <sClient> clientes;
-	vector <sUser> users;
-	sUser user;
-	string clientesComma=::ClitesComma, clientesFileName=::ClientsFileName;
+	
 	while (true)
 	{
 		system("color F");
-		RefreshUsers(users,UsersFileName);
-		user=ReadLoginUser(users);
-		::User = user;
-		RefreshClintes(clientes);
-		Menue(users, clientes);
+		RefreshUsers(::VUsers, UsersFileName);
+		::User = ReadLoginUser(::VUsers);
+		RefreshClintes(::VClientes);
+		Menue(::VUsers, ::VClientes);
 	}
 	return 0;
 }
 int main()
 {
-	
+
 	while (true)
 	{
 
