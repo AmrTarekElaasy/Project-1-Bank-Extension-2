@@ -11,6 +11,8 @@ const string UsersFileName = "Users.txt";
 const int encryptionCode = 0, decryptionCode = 0;
 string ClitesComma = "#//#";
 string UsersComma = "#//#";
+
+
 int NumberOfClientes(string FileName)
 {
 	string s1;
@@ -89,6 +91,24 @@ struct sUser
 
 	bool Delete = false;
 };
+sUser User;
+short ReadShortNumber(string messeg, short from, short to)
+{
+	short input;
+	cout << messeg;
+	cin >> input;
+	while (input<from || input>to || cin.fail())
+	{
+		if (cin.fail())
+		{
+			cin.clear();
+			cin.ignore(1000, '\n');
+		}
+		printf("Enter number from %d to %d : ", from, to);
+		cin >> input;
+	}
+	return input;
+}
 bool SearchCliente(vector <sClient>& vClientes, string AccountNumber)
 {
 
@@ -371,7 +391,8 @@ vector <sClient> ReadFileClientsToRecord(string comma,string fileName)
 		MyFile.close();
 	}
 	return vClients;
-}vector <sUser> ReadFileUsersToRecord(string FileName=UsersFileName,string usersComma=::UsersComma)
+}
+vector <sUser> ReadFileUsersToRecord(string FileName=UsersFileName,string usersComma=::UsersComma)
 {
 	vector <sUser> vUsers;
 	fstream MyFile;
@@ -729,8 +750,7 @@ bool Transactions(vector <sClient>& vClientes,string comma, string FileName )
 	while (true)
 	{
 		TransactionsMenue();
-		cout << "Choose what do you want to do ? [1 to 4] ? ";
-		cin >> Choose;
+		Choose=ReadShortNumber("Choose what do you want to do ? [1 to 4] ? ",1,4);
 		switch (Choose)
 		{
 		case 1:
@@ -755,10 +775,10 @@ bool Transactions(vector <sClient>& vClientes,string comma, string FileName )
 
 }
 
-void RefreshClintes(vector <sClient>& clintes,string comma,string fileName)
+void RefreshClintes(vector <sClient>& clintes)
 {
-	clintes = ReadFileClientsToRecord(comma,fileName);
-	SaveVectorInFile(vClientesTovStrings(clintes,comma),false,fileName);
+	clintes = ReadFileClientsToRecord(::ClitesComma,::ClientsFileName);
+	SaveVectorInFile(vClientesTovStrings(clintes, ::ClitesComma),false, ClientsFileName);
 }
 void RefreshUsers(vector <sUser>& users,string FileName)
 {
@@ -786,7 +806,7 @@ void ShowMenueScreen()
 	cout << "        [8] Exit.\n";
 	cout << "============================================\n";
 }
-enum enMenueScreen { eShowClientList = 1, eAddNewClient = 2, eDeleteClient = 3, eUpdateClientInfo = 4, eFindClient = 5, eTransactions = 6, eRefresh = 7, eExit = 8 };
+enum enMenueScreen { eShowClientList = 1, eAddNewClient = 2, eDeleteClient = 3, eUpdateClientInfo = 4, eFindClient = 5, eTransactions = 6,eManageUser=7, eRefresh = 8, eLogout = 9 };
 
 sUser ReadLoginUser(vector <sUser>& vUsers)
 {
@@ -808,7 +828,15 @@ sUser ReadLoginUser(vector <sUser>& vUsers)
 	}
 	return user;
 }
-bool Menue(vector <sUser>& vUsers, vector<sClient> & vClintes, string comma,string clientsFileName)
+void PrintManageUsersMenue()
+{
+
+}
+bool ManageUsers()
+{
+
+}
+bool Menue(vector <sUser>& vUsers, vector<sClient> & vClintes)
 {
 	short Choose = 1;
 
@@ -816,8 +844,7 @@ bool Menue(vector <sUser>& vUsers, vector<sClient> & vClintes, string comma,stri
 	{
 		
 		ShowMenueScreen();
-		cout << "Choose what do you want to do? [1 to 8]? ";
-		cin >> Choose;
+		Choose=ReadShortNumber("Choose what do you want to do? [1 to 8]? ",1,8);
 		system("cls");
 		switch (Choose)
 		{
@@ -825,13 +852,13 @@ bool Menue(vector <sUser>& vUsers, vector<sClient> & vClintes, string comma,stri
 			PrintClints(vClintes);
 			break;
 		case enMenueScreen::eAddNewClient:
-			AddClint(vClintes, comma, clientsFileName);
+			AddClint(vClintes, ::ClitesComma, ::ClientsFileName);
 			break;
 		case enMenueScreen::eDeleteClient:
-			DelateCliente(vClintes, comma,clientsFileName);
+			DelateCliente(vClintes, ::ClitesComma, ::ClientsFileName);
 			break;
 		case enMenueScreen::eUpdateClientInfo:
-			UpdateClienteByAccountNumber(vClintes,comma,clientsFileName);
+			UpdateClienteByAccountNumber(vClintes, ::ClitesComma, ::ClientsFileName);
 			break;
 		case enMenueScreen::eFindClient:
 			SearchAndPrintCliente(vClintes);
@@ -839,44 +866,48 @@ bool Menue(vector <sUser>& vUsers, vector<sClient> & vClintes, string comma,stri
 			break;
 
 		case enMenueScreen::eTransactions:
-			Transactions(vClintes,comma,clientsFileName);
+			Transactions(vClintes, ::ClitesComma, ::ClientsFileName);
 			break;
 		case eRefresh:
-			RefreshClintes(vClintes,comma,clientsFileName);
+			RefreshClintes(vClintes);
 			break;
-		case enMenueScreen::eExit:
+		case enMenueScreen::eManageUser:
+
+			break;
+		case enMenueScreen::eLogout:
 
 			return 0;
-		default:
-			RefreshClintes(vClintes,comma,clientsFileName);
-			break;
+
 		}
 
 	}
 }
+
 bool Bank()
 {
 	vector <sClient> clientes;
 	vector <sUser> users;
+	sUser user;
 	string clientesComma=::ClitesComma, clientesFileName=::ClientsFileName;
 	while (true)
 	{
 		system("color F");
 		RefreshUsers(users,UsersFileName);
-		ReadLoginUser(users);
-		RefreshClintes(clientes,clientesComma,clientesFileName);
-		Menue(users, clientes, clientesComma, clientesFileName);
+		user=ReadLoginUser(users);
+		::User = user;
+		RefreshClintes(clientes);
+		Menue(users, clientes);
 	}
 	return 0;
 }
 int main()
 {
+	
 	while (true)
 	{
 
 		Bank();
 	}
-	cout << 5;
 	return 0;
 }
 
