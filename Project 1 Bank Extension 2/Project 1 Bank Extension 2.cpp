@@ -145,6 +145,25 @@ bool SearchUser(vector <sUser>& vUsers, sUser user)
 	}
 	return false;
 }
+bool CheckLoginUser(vector <sUser>& vUsers, sUser & user)
+{
+
+	for (int i = 0; i < vUsers.size(); i++)
+	{
+		if (vUsers[i].UserName == user.UserName)
+		{
+			if (vUsers[i].Password == user.Password)
+			{
+				user = vUsers[i];
+				return true;
+			}
+				
+			
+		}
+
+	}
+	return false;
+}
 sClient ReadClinte(vector <sClient>& clientes, string AccounteNumber = "")
 {
 	sClient clinte;
@@ -228,6 +247,7 @@ bool SearchAndPrintCliente(vector <sClient>& vClientes)
 {
 
 	string search; int index;
+	system("cls");
 	cout << "-----------------------------------------\n";
 	cout << "\tClientes Search screen\n";
 	cout << "-----------------------------------------\n";
@@ -396,6 +416,16 @@ bool checkPermission(sUser user,enPermission permisson)
 	}
 	return false;
 }
+bool checkPermissionAndPrint(sUser user, enPermission permisson)
+{
+	if (checkPermission(user, permisson))
+		return true;
+	
+	cout << "You do not have a permission\n";
+	system("pause");
+	return false;
+
+}
 short ReadPermission()
 {
 	short permissions=0;
@@ -472,24 +502,6 @@ void AddNewUser()
 	string s1;
 	
 
-	do
-	{
-		ScreenName("Add New User screen");
-		::VUsers.push_back(ReadUser());
-		if (::VUsers.back().UserName != "")
-		{
-
-			s1 = ConvertRecordUsersToLineWithEncryption(::VUsers.back());
-			SaveStringInFile(s1, 1, ::UsersFileName);
-		}
-
-
-
-		cout << "Do you nead add more user Y/N ? ";
-		cin >> AddMore;
-
-
-	} while (AddMore == "y" || AddMore == "Y");
 	
 }
 
@@ -636,6 +648,7 @@ void DelateCliente(vector <sClient>& vClientes, string clienteComma, string clie
 	int index;
 	string YesOrNo;
 	vector <sClient>::iterator iterClientes = vClientes.begin();
+	system("cls");
 	system("color 40");
 	cout << "-----------------------------------------\n";
 	cout << "\tDelate Clients screen\n";
@@ -704,7 +717,7 @@ void UpdateClienteByAccountNumber(vector <sClient>& vClientes, string clienteCom
 	int index;
 	string YesOrNo;
 	vector <sClient>::iterator iterClientes = vClientes.begin();
-
+	system("cls");
 	cout << "-----------------------------------------\n";
 	cout << "\tUpdate Clients screen\n";
 	cout << "-----------------------------------------\n";
@@ -961,9 +974,9 @@ sUser ReadLoginUser(vector <sUser>& vUsers)
 	cout << "Enter Password : ";
 	getline(std::cin >> ws, user.Password);
 
-	while (!SearchUser(vUsers, user))
+	while (!CheckLoginUser(vUsers, user))
 	{
-		cout << "Username and password error\n";
+		cout << "Username or password error\n";
 		cout << "Enter UserName : ";
 		getline(std::cin >> ws, user.UserName);
 		cout << "Enter Password : ";
@@ -974,6 +987,7 @@ sUser ReadLoginUser(vector <sUser>& vUsers)
 
 void PrintManageUsersMenue()
 {
+	system("cls");
 	ScreenName("Manage Users Screen");
 	cout << "\t[1] List Users.\n\t[2] Add New User.\n\t[3] Delete User.\n\t[4] Update User.\n\t[5] Find User.\n\t[6] Main Menue.\n";
 	cout << "=========================================\n";
@@ -1016,40 +1030,45 @@ bool ManageUsers()
 }
 bool Menue(vector <sUser>& vUsers, vector<sClient>& vClintes)
 {
-	short Choose = 1;
+	short Choose = 0;
 
 	while (true)
 	{
 
 		ShowMenueScreen();
-		Choose = ReadShortNumber("Choose what do you want to do? [1 to 9]? ", 1, 9);
-		system("cls");
+		Choose = ReadShortNumber("Enter number from 1 to 9 : ", 1, 9);
 		switch (Choose)
 		{
 		case enMenueScreen::eShowClientList:
+			if(checkPermissionAndPrint(::User,enPermission::enClientesList))
 			PrintClints();
 			break;
 		case enMenueScreen::eAddNewClient:
+			if (checkPermissionAndPrint(::User, enPermission::enAddClient))
 			AddClint();
 			break;
 		case enMenueScreen::eDeleteClient:
+			if (checkPermissionAndPrint(::User, enPermission::enDeleteClient))
 			DelateCliente(vClintes, ::ClitesComma, ::ClientsFileName);
 			break;
 		case enMenueScreen::eUpdateClientInfo:
+			if (checkPermissionAndPrint(::User, enPermission::enUpdateClient))
 			UpdateClienteByAccountNumber(vClintes, ::ClitesComma, ::ClientsFileName);
 			break;
 		case enMenueScreen::eFindClient:
+			if (checkPermissionAndPrint(::User, enPermission::enFindClient))
 			SearchAndPrintCliente(vClintes);
-
 			break;
 
 		case enMenueScreen::eTransactions:
+			if (checkPermissionAndPrint(::User, enPermission::enTransactions))
 			Transactions(vClintes, ::ClitesComma, ::ClientsFileName);
 			break;
 		case eRefresh:
 			RefreshClintes(vClintes);
 			break;
 		case enMenueScreen::eManageUsers:
+			if (checkPermissionAndPrint(::User, enPermission::enManageUsers))
 			ManageUsers();
 			break;
 		case enMenueScreen::eLogout:
