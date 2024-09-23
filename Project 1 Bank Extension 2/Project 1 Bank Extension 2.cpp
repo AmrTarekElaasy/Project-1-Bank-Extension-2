@@ -82,7 +82,6 @@ struct sClient
 	double AccountBalance = 0;
 	bool Delete = false;
 };
-enum enPermission { All = -1, Normal };
 struct sUser
 {
 	string UserName = "";
@@ -137,7 +136,7 @@ bool SearchUser(vector <sUser>& vUsers, sUser user)
 
 	for (int i = 0; i < vUsers.size(); i++)
 	{
-		if (vUsers[i].UserName == user.UserName && vUsers[i].Password == user.Password)
+		if (vUsers[i].UserName == user.UserName )
 		{
 
 			return true;
@@ -266,15 +265,22 @@ string ConvertRecordClintesToLineWithEncryption(sClient clinte, string ClitesCom
 	Encryption(stClientRecord);
 	return stClientRecord;
 }
+
 string ConvertRecordUsersToLineWithEncryption(sUser user, string usersComma)
 {
+	if (user.Delete)
+		return "";
 	string stClientRecord = "";
 	stClientRecord += user.UserName + usersComma;
 	stClientRecord += user.Password + usersComma;
-	stClientRecord += to_string(user.permission) + usersComma;
+	stClientRecord += to_string(user.permission);
 
 	Encryption(stClientRecord);
 	return stClientRecord;
+}
+string ConvertRecordUsersToLineWithEncryption(sUser user)
+{
+	return ConvertRecordUsersToLineWithEncryption(user, ::UsersComma);
 }
 sClient LineClintesToRecordWithDecryption(string s1, string ClitesComma)
 {
@@ -380,6 +386,111 @@ void AddClint()
 	} while (AddMore == "y" || AddMore == "Y");
 	cout << "Press any key to go back to Main Menue...";
 	system("pause>0");
+}
+enum enPermission{enAll=-1,enClientesList=1, enAddClient=2, enDeleteClient=4, enUpdateClient=8, enFindClient=16, enTransactions=32, enManageUsers=64};
+bool checkPermission(sUser user,enPermission permisson)
+{
+	if ((user.permission & permisson)|| (user.permission == enPermission::enAll))
+	{
+		return true;
+	}
+	return false;
+}
+short ReadPermission()
+{
+	short permissions=0;
+	string yOrN="";
+
+	cout << "Do you want to give all the permissions ? ";
+	cin >> yOrN;
+	if (yOrN == "y" || yOrN == "Y")
+		return enPermission::enAll;
+
+	cout << "Do you want to give him permission to show Clientes List ? ";
+	cin >> yOrN;
+	if (yOrN == "y" || yOrN == "Y")
+		permissions += enPermission::enClientesList;
+
+	cout << "Do you want to give him permission to Add Client ? ";
+	cin >> yOrN;
+	if (yOrN == "y" || yOrN == "Y")
+		permissions += enPermission::enAddClient;
+
+	cout << "Do you want to give him permission to Delete Client ? ";
+	cin >> yOrN;
+	if (yOrN == "y" || yOrN == "Y")
+		permissions += enPermission::enDeleteClient;
+
+	cout << "Do you want to give him permission to Update Client ? ";
+	cin >> yOrN;
+	if (yOrN == "y" || yOrN == "Y")
+		permissions += enPermission::enUpdateClient;
+
+	cout << "Do you want to give him permission to Find Client ? ";
+	cin >> yOrN;
+	if (yOrN == "y" || yOrN == "Y")
+		permissions += enPermission::enFindClient;
+
+	cout << "Do you want to give him permission to Transactions ? ";
+	cin >> yOrN;
+	if (yOrN == "y" || yOrN == "Y")
+		permissions += enPermission::enTransactions;
+
+	cout << "Do you want to give him permission to Manage Users ? ";
+	cin >> yOrN;
+	if (yOrN == "y" || yOrN == "Y")
+		permissions += enPermission::enManageUsers;
+
+	return permissions;
+}
+sUser ReadUser()
+{
+	sUser user;
+	cout << "Enter User Name : ";
+	getline(cin >> ws, user.UserName);
+	while (SearchUser(::VUsers,user))
+	{
+		cout << "The User Name Is Exist\n";
+		cout << "Enter User Name : ";
+		getline(cin >> ws, user.UserName);
+	}
+	user.Password = "";
+	while (user.Password == "")
+	{
+		cout << "Enter Password : ";
+		getline(cin >> ws, user.Password);
+	}
+	user.permission = ReadPermission();
+
+	return user;
+	
+}
+void AddNewUser()
+{
+
+	string AddMore = "Y";
+	string s1;
+	
+
+	do
+	{
+		ScreenName("Add New User screen");
+		::VUsers.push_back(ReadUser());
+		if (::VUsers.back().UserName != "")
+		{
+
+			s1 = ConvertRecordUsersToLineWithEncryption(::VUsers.back());
+			SaveStringInFile(s1, 1, ::UsersFileName);
+		}
+
+
+
+		cout << "Do you nead add more user Y/N ? ";
+		cin >> AddMore;
+
+
+	} while (AddMore == "y" || AddMore == "Y");
+	
 }
 
 vector <sClient> ReadFileClientsToRecord(string comma, string fileName)
@@ -884,7 +995,7 @@ bool ManageUsers()
 			ListUsers(::VUsers);
 			break;
 		case 2:
-			
+			AddNewUser();
 			break;
 		case 3:
 			break;
@@ -900,7 +1011,6 @@ bool ManageUsers()
 		cout << "Press any key to go back to Manage Users Menue...";
 		system("pause>0");
 	}
-
 
 
 }
