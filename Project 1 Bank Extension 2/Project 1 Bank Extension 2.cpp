@@ -136,7 +136,7 @@ bool SearchUser(vector <sUser>& vUsers, sUser user)
 
 	for (int i = 0; i < vUsers.size(); i++)
 	{
-		if (vUsers[i].UserName == user.UserName )
+		if (vUsers[i].UserName == user.UserName)
 		{
 
 			return true;
@@ -145,12 +145,12 @@ bool SearchUser(vector <sUser>& vUsers, sUser user)
 	}
 	return false;
 }
-bool SearchUser(vector <sUser>& vUsers, string userName,int & index)
+bool SearchUser(vector <sUser>& vUsers, string userName, int& index)
 {
 
 	for (int i = 0; i < vUsers.size(); i++)
 	{
-		if (vUsers[i].UserName == userName )
+		if (vUsers[i].UserName == userName)
 		{
 			index = i;
 			return true;
@@ -159,7 +159,7 @@ bool SearchUser(vector <sUser>& vUsers, string userName,int & index)
 	}
 	return false;
 }
-bool CheckLoginUser(vector <sUser>& vUsers, sUser & user)
+bool CheckLoginUser(vector <sUser>& vUsers, sUser& user)
 {
 
 	for (int i = 0; i < vUsers.size(); i++)
@@ -171,8 +171,8 @@ bool CheckLoginUser(vector <sUser>& vUsers, sUser & user)
 				user = vUsers[i];
 				return true;
 			}
-				
-			
+
+
 		}
 
 	}
@@ -228,11 +228,11 @@ void PrintClint(sClient& clintes)
 void PrintUser(sUser& user)
 {
 	printf("=========================================\n");
-	cout << " User Name   : " << user.UserName<< endl;
+	cout << " User Name   : " << user.UserName << endl;
 	cout << " Password    : " << user.Password << endl;
 	cout << " permission  : " << user.permission << endl;
 	printf("=========================================\n\n");
-	system("pause");
+
 
 }
 bool SearchCliente(vector <sClient>& vClientes, string AccountNumber, int& index)
@@ -282,16 +282,16 @@ bool SearchAndPrintUser(vector <sUser>& vUsers, int& index)
 	}
 	else
 	{
-		cout << "Not Found\n";
+		cout << " Not Found\n";
 		return 0;
 	}
 }
-bool SearchAndPrintUser(vector <sUser> & vUsers,bool printNameOfScreen=true)
+bool SearchAndPrintUser(vector <sUser>& vUsers, bool printNameOfScreen = true)
 {
 	int index;
 	if (PrintNameOfScreen)
 		PrintNameOfScreen("   Find User Screen");
-	return SearchAndPrintUser(vUsers,index);
+	return SearchAndPrintUser(vUsers, index);
 }
 bool SearchAndPrintCliente(vector <sClient>& vClientes)
 {
@@ -457,10 +457,10 @@ void AddClint()
 	cout << "Press any key to go back to Main Menue...";
 	system("pause>0");
 }
-enum enPermission{enAll=-1,enClientesList=1, enAddClient=2, enDeleteClient=4, enUpdateClient=8, enFindClient=16, enTransactions=32, enManageUsers=64};
-bool checkPermission(sUser user,enPermission permisson)
+enum enPermission { enAll = -1, enClientesList = 1, enAddClient = 2, enDeleteClient = 4, enUpdateClient = 8, enFindClient = 16, enTransactions = 32, enManageUsers = 64 };
+bool checkPermission(sUser user, enPermission permisson)
 {
-	if ((user.permission & permisson)|| (user.permission == enPermission::enAll))
+	if ((user.permission & permisson) || (user.permission == enPermission::enAll))
 	{
 		return true;
 	}
@@ -470,7 +470,7 @@ bool checkPermissionAndPrint(sUser user, enPermission permisson)
 {
 	if (checkPermission(user, permisson))
 		return true;
-	
+
 	cout << "You do not have a permission\n";
 	system("pause");
 	return false;
@@ -478,62 +478,66 @@ bool checkPermissionAndPrint(sUser user, enPermission permisson)
 }
 short ReadPermission()
 {
-	short permissions=0;
-	string yOrN="";
+	short permissions = 0;
+	string yOrN = "";
 
-	cout << "Do you want to give all the permissions ? ";
+	cout << "Do you want to give all the permissions y/n ? ";
 	cin >> yOrN;
 	if (yOrN == "y" || yOrN == "Y")
 		return enPermission::enAll;
 
-	cout << "Do you want to give him permission to show Clientes List ? ";
+	cout << "Do you want to give him permission to show Clientes List y/n ? ";
 	cin >> yOrN;
 	if (yOrN == "y" || yOrN == "Y")
 		permissions += enPermission::enClientesList;
 
-	cout << "Do you want to give him permission to Add Client ? ";
+	cout << "Do you want to give him permission to Add Client y/n ? ";
 	cin >> yOrN;
 	if (yOrN == "y" || yOrN == "Y")
 		permissions += enPermission::enAddClient;
 
-	cout << "Do you want to give him permission to Delete Client ? ";
+	cout << "Do you want to give him permission to Delete Client y/n ? ";
 	cin >> yOrN;
 	if (yOrN == "y" || yOrN == "Y")
 		permissions += enPermission::enDeleteClient;
 
-	cout << "Do you want to give him permission to Update Client ? ";
+	cout << "Do you want to give him permission to Update Client y/n ? ";
 	cin >> yOrN;
 	if (yOrN == "y" || yOrN == "Y")
 		permissions += enPermission::enUpdateClient;
 
-	cout << "Do you want to give him permission to Find Client ? ";
+	cout << "Do you want to give him permission to Find Client y/n ? ";
 	cin >> yOrN;
 	if (yOrN == "y" || yOrN == "Y")
 		permissions += enPermission::enFindClient;
 
-	cout << "Do you want to give him permission to Transactions ? ";
+	cout << "Do you want to give him permission to Transactions y/n ? ";
 	cin >> yOrN;
 	if (yOrN == "y" || yOrN == "Y")
 		permissions += enPermission::enTransactions;
 
-	cout << "Do you want to give him permission to Manage Users ? ";
+	cout << "Do you want to give him permission to Manage Users y/n ? ";
 	cin >> yOrN;
 	if (yOrN == "y" || yOrN == "Y")
 		permissions += enPermission::enManageUsers;
 
 	return permissions;
 }
-sUser ReadUser()
+sUser ReadUser(bool ReadUserName = true)
 {
 	sUser user;
-	cout << "Enter User Name : ";
-	getline(cin >> ws, user.UserName);
-	while (SearchUser(::VUsers,user))
+	if (ReadUserName)
 	{
-		cout << "The User Name Is Exist\n";
 		cout << "Enter User Name : ";
 		getline(cin >> ws, user.UserName);
+		while (SearchUser(::VUsers, user))
+		{
+			cout << "The User Name Is Exist\n";
+			cout << "Enter User Name : ";
+			getline(cin >> ws, user.UserName);
+		}
 	}
+	
 	user.Password = "";
 	while (user.Password == "")
 	{
@@ -543,16 +547,30 @@ sUser ReadUser()
 	user.permission = ReadPermission();
 
 	return user;
-	
+
 }
 void AddNewUser()
 {
 
 	string AddMore = "Y";
 	string s1;
-	
+	do
+	{
 
-	
+
+		PrintNameOfScreen("  Add New User screen");
+		::VUsers.push_back(ReadUser());
+		if (::VUsers.back().UserName != "")
+		{
+			s1 = ConvertRecordUsersToLineWithEncryption(::VUsers.back());
+			SaveStringInFile(s1, 1, ::UsersFileName);
+
+			cout << "Do you nead add more user Y/N ? ";
+			cin >> AddMore;
+		}
+
+
+	} while (AddMore == "y" || AddMore == "Y");
 }
 
 vector <sClient> ReadFileClientsToRecord(string comma, string fileName)
@@ -631,16 +649,16 @@ void ListUsers(vector <sUser>& vUsers)
 	{
 		if (user.UserName != "")
 		{
-			
-			cout <<" " << setw(35) << left << user.UserName << "|";
-			cout <<" " << setw(14) << left << user.Password << "|";
-			cout <<" " << setw(14) << left << user.permission << "\n";
+
+			cout << " " << setw(35) << left << user.UserName << "|";
+			cout << " " << setw(14) << left << user.Password << "|";
+			cout << " " << setw(14) << left << user.permission << "\n";
 
 		}
 
 	}
 	printf("=====================================================================\n");
-	
+
 }
 
 
@@ -657,14 +675,14 @@ vector <string> vClientesTovStrings(vector <sClient>& vClientes, string comma)
 	}
 	return vStrings;
 }
-vector <string> vUsersTovStrings(vector <sUser>& vUsers, string usersFileName, string usersComma)
+vector <string> vUsersTovStrings(vector <sUser>& vUsers)
 {
 	vector <string> vStrings;
 	for (sUser user : vUsers)
 	{
-		if (user.UserName != "" && user.Password != "")
+		if (user.UserName != "" && user.Password != "" && user.Delete != true)
 		{
-			vStrings.push_back(ConvertRecordUsersToLineWithEncryption(user, UsersComma));
+			vStrings.push_back(ConvertRecordUsersToLineWithEncryption(user, ::UsersComma));
 		}
 	}
 	return vStrings;
@@ -988,7 +1006,7 @@ void RefreshClintes(vector <sClient>& clintes)
 void RefreshUsers(vector <sUser>& users, string FileName)
 {
 	users = ReadFileUsersToRecord(FileName);
-	vector <string> vs = vUsersTovStrings(users, FileName, UsersComma);
+	vector <string> vs = vUsersTovStrings(users);
 	SaveVectorInFile(vs, false, FileName);
 
 }
@@ -1034,6 +1052,23 @@ sUser ReadLoginUser(vector <sUser>& vUsers)
 	}
 	return user;
 }
+void DeleteUser()
+{
+	int index;
+	string yOrN = "n";
+	PrintNameOfScreen("  Delete User Screen ");
+	if (SearchAndPrintUser(::VUsers, index))
+	{
+		cout << " Are you shore do you nead Delete this user y/n : ";
+		cin >> yOrN;
+		if (yOrN == "y" || yOrN == "Y")
+		{
+			::VUsers[index].Delete = true;
+			SaveVectorInFile(vUsersTovStrings(::VUsers), false, ::UsersFileName);
+			::VUsers = ReadFileUsersToRecord(::UsersFileName);
+		}
+	}
+}
 
 void PrintManageUsersMenue()
 {
@@ -1062,6 +1097,7 @@ bool ManageUsers()
 			AddNewUser();
 			break;
 		case 3:
+			DeleteUser();
 			break;
 		case 4:
 			break;
@@ -1091,36 +1127,36 @@ bool Menue(vector <sUser>& vUsers, vector<sClient>& vClintes)
 		switch (Choose)
 		{
 		case enMenueScreen::eShowClientList:
-			if(checkPermissionAndPrint(::User,enPermission::enClientesList))
-			PrintClints();
+			if (checkPermissionAndPrint(::User, enPermission::enClientesList))
+				PrintClints();
 			break;
 		case enMenueScreen::eAddNewClient:
 			if (checkPermissionAndPrint(::User, enPermission::enAddClient))
-			AddClint();
+				AddClint();
 			break;
 		case enMenueScreen::eDeleteClient:
 			if (checkPermissionAndPrint(::User, enPermission::enDeleteClient))
-			DelateCliente(vClintes, ::ClitesComma, ::ClientsFileName);
+				DelateCliente(vClintes, ::ClitesComma, ::ClientsFileName);
 			break;
 		case enMenueScreen::eUpdateClientInfo:
 			if (checkPermissionAndPrint(::User, enPermission::enUpdateClient))
-			UpdateClienteByAccountNumber(vClintes, ::ClitesComma, ::ClientsFileName);
+				UpdateClienteByAccountNumber(vClintes, ::ClitesComma, ::ClientsFileName);
 			break;
 		case enMenueScreen::eFindClient:
 			if (checkPermissionAndPrint(::User, enPermission::enFindClient))
-			SearchAndPrintCliente(vClintes);
+				SearchAndPrintCliente(vClintes);
 			break;
 
 		case enMenueScreen::eTransactions:
 			if (checkPermissionAndPrint(::User, enPermission::enTransactions))
-			Transactions(vClintes, ::ClitesComma, ::ClientsFileName);
+				Transactions(vClintes, ::ClitesComma, ::ClientsFileName);
 			break;
 		case eRefresh:
 			RefreshClintes(vClintes);
 			break;
 		case enMenueScreen::eManageUsers:
 			if (checkPermissionAndPrint(::User, enPermission::enManageUsers))
-			ManageUsers();
+				ManageUsers();
 			break;
 		case enMenueScreen::eLogout:
 
@@ -1133,7 +1169,7 @@ bool Menue(vector <sUser>& vUsers, vector<sClient>& vClintes)
 
 bool Bank()
 {
-	
+
 	while (true)
 	{
 		system("color F");
