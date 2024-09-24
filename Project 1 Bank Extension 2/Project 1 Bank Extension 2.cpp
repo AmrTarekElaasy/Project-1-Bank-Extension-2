@@ -93,9 +93,13 @@ struct sUser
 sUser User;
 vector <sUser>VUsers;
 vector <sClient>VClientes;
-void PrintNameOfScreen(string screenName)
+void PrintNameOfScreen(string screenName, bool CLS = true)
 {
-	system("cls");
+	if (CLS)
+	{
+		system("cls");
+	}
+
 	cout << "=================================================\n";
 	cout << "\t" << screenName << endl;
 	cout << "=================================================\n";
@@ -636,7 +640,7 @@ void ClearFileUsersAndFileClients(string FileUsersName, string FileClientsName, 
 	{
 		FileUsersName.clear();
 		FileClientsName.clear();
-		fstream file,file2;
+		fstream file, file2;
 		file.open(FileUsersName, ios::out);
 		file2.open(FileClientsName, ios::out);
 		file.close();
@@ -1052,8 +1056,9 @@ void FactoryResetWhenAdminIsNotPresent()
 		tempUser.UserName = "Admin";
 		tempUser.Password = "0000";
 		tempUser.permission = enPermission::enAll;
-		SaveStringInFile(ConvertRecordUsersToLineWithEncryption(tempUser),false,::UsersFileName);
+		SaveStringInFile(ConvertRecordUsersToLineWithEncryption(tempUser), false, ::UsersFileName);
 		::VUsers = ReadFileUsersToRecord(::UsersFileName);
+		cout << "\nMain User Name Is : " << ::VUsers.front().UserName << " And Main Password Is : " << ::VUsers.front().Password << "\n\n";
 	}
 }
 void ShowMenueScreen()
@@ -1080,9 +1085,8 @@ enum enMenueScreen { eShowClientList = 1, eAddNewClient = 2, eDeleteClient = 3, 
 sUser ReadLoginUser(vector <sUser>& vUsers)
 {
 	sUser user;
-	system("cls");
 	system("color 0");
-	PrintNameOfScreen("         Login Screen");
+	PrintNameOfScreen("\tLogin Screen", false);
 	cout << "Enter UserName : ";
 	getline(std::cin >> ws, user.UserName);
 	cout << "Enter Password : ";
@@ -1244,6 +1248,7 @@ bool Bank()
 	while (true)
 	{
 		system("color F");
+		system("cls");
 		::VUsers = ReadFileUsersToRecord(::UsersFileName);
 		FactoryResetWhenAdminIsNotPresent();
 		::User = ReadLoginUser(::VUsers);
