@@ -630,7 +630,17 @@ vector <sUser> ReadFileUsersToRecord(string FileName = UsersFileName, string use
 	}
 	return vUsers;
 }
-
+void ClearFileUsersAndFileClients(string FileUsersName, string FileClientsName, bool AreYouSure, bool AreYouSure2, bool AreYouSure3)
+{
+	if (AreYouSure && AreYouSure2 && AreYouSure3)
+	{
+		fstream file,file2;
+		file.open(FileUsersName, ios::out);
+		file2.open(FileClientsName, ios::out);
+		file.close();
+		file2.close();
+	}
+}
 void PrintClints()
 {
 	system("cls");
@@ -661,7 +671,9 @@ void ListUsers(vector <sUser>& vUsers)
 {
 	int NumberOfUsers = vUsers.size();
 	if (::User.UserName != "Admin")
-	{NumberOfUsers -= 1;}
+	{
+		NumberOfUsers -= 1;
+	}
 	printf("\n                       Users LIST (%d) User(s).                       \n", NumberOfUsers);
 	printf("=====================================================================\n");
 	printf(" User Name                          |Password       | Permission\n");
@@ -672,7 +684,9 @@ void ListUsers(vector <sUser>& vUsers)
 		if (user.UserName != "")
 		{
 			if ((user.UserName == "Admin" && ::User.UserName != "Admin"))
-			{continue;}
+			{
+				continue;
+			}
 			cout << " " << setw(35) << left << user.UserName << "|";
 			cout << " " << setw(14) << left << user.Password << "|";
 			cout << " " << setw(14) << left << user.permission << "\n";
@@ -1025,14 +1039,21 @@ void RefreshClintes(vector <sClient>& clintes)
 	clintes = ReadFileClientsToRecord(::ClitesComma, ::ClientsFileName);
 	SaveVectorInFile(vClientesTovStrings(clintes, ::ClitesComma), false, ClientsFileName);
 }
-void RefreshUsers(vector <sUser>& users, string FileName)
+
+void FactoryResetWhenAdminIsNotPresent()
 {
-	users = ReadFileUsersToRecord(FileName);
-	vector <string> vs = vUsersTovStrings(users);
-	SaveVectorInFile(vs, false, FileName);
-
+	int tempIndex;
+	if (!SearchUser(::VUsers, "Admin", tempIndex))
+	{
+		ClearFileUsersAndFileClients(::UsersFileName, ::ClientsFileName, true, true, true);
+		sUser tempUser;
+		tempUser.UserName = "Admin";
+		tempUser.Password = "0000";
+		tempUser.permission = enPermission::enAll;
+		::VUsers.push_back(tempUser);
+		SaveStringInFile(ConvertRecordUsersToLineWithEncryption(tempUser),false,::UsersFileName);
+	}
 }
-
 void ShowMenueScreen()
 {
 	system("cls");
@@ -1110,8 +1131,8 @@ void UpdateUser()
 	PrintNameOfScreen("\tUpdate User Screen ");
 	if (SearchAndPrintUser(::VUsers, index))
 	{
-		    ::VUsers[index] = ReadUser(::VUsers[index].UserName);
-			SaveVectorInFile(vUsersTovStrings(::VUsers), false, ::UsersFileName);
+		::VUsers[index] = ReadUser(::VUsers[index].UserName);
+		SaveVectorInFile(vUsersTovStrings(::VUsers), false, ::UsersFileName);
 
 	}
 }
@@ -1221,9 +1242,10 @@ bool Bank()
 	while (true)
 	{
 		system("color F");
-		RefreshUsers(::VUsers, UsersFileName);
-		RefreshClintes(::VClientes);
+		::VUsers = ReadFileUsersToRecord(::UsersFileName);
+		FactoryResetWhenAdminIsNotPresent();
 		::User = ReadLoginUser(::VUsers);
+		::VClientes = ReadFileClientsToRecord(::ClitesComma, ::ClientsFileName);
 		Menue(::VUsers, ::VClientes);
 	}
 	return 0;
