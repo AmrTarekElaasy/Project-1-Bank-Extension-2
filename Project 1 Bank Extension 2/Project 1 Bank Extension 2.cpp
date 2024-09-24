@@ -1041,6 +1041,7 @@ sUser ReadLoginUser(vector <sUser>& vUsers)
 	sUser user;
 	system("cls");
 	system("color 0");
+	PrintNameOfScreen("         Login Screen");
 	cout << "Enter UserName : ";
 	getline(std::cin >> ws, user.UserName);
 	cout << "Enter Password : ";
@@ -1191,6 +1192,7 @@ bool Bank()
 	{
 		system("color F");
 		RefreshUsers(::VUsers, UsersFileName);
+
 		::User = ReadLoginUser(::VUsers);
 		RefreshClintes(::VClientes);
 		Menue(::VUsers, ::VClientes);
