@@ -93,7 +93,7 @@ struct sUser
 sUser User;
 vector <sUser>VUsers;
 vector <sClient>VClientes;
-void ScreenName(string screenName)
+void PrintNameOfScreen(string screenName)
 {
 	system("cls");
 	cout << "=========================================\n";
@@ -139,6 +139,20 @@ bool SearchUser(vector <sUser>& vUsers, sUser user)
 		if (vUsers[i].UserName == user.UserName )
 		{
 
+			return true;
+		}
+
+	}
+	return false;
+}
+bool SearchUser(vector <sUser>& vUsers, string userName,int & index)
+{
+
+	for (int i = 0; i < vUsers.size(); i++)
+	{
+		if (vUsers[i].UserName == userName )
+		{
+			index = i;
 			return true;
 		}
 
@@ -202,13 +216,23 @@ sClient ReadClinte(vector <sClient>& clientes, string AccounteNumber = "")
 }
 void PrintClint(sClient& clintes)
 {
-	printf("______________________________________________________\n");
+	printf("=========================================\n");
 	cout << "Accounte Number : " << clintes.AccounteNumber << endl;
 	cout << "Pin Code        : " << clintes.PinCode << endl;
 	cout << "Name            : " << clintes.Name << endl;
 	cout << "Phone           : " << clintes.Phone << endl;
 	printf("Account Balance : %.*f \n", 2, clintes.AccountBalance);
-	printf("______________________________________________________\n\n");
+	printf("=========================================\n\n");
+
+}
+void PrintUser(sUser& user)
+{
+	printf("=========================================\n");
+	cout << " User Name   : " << user.UserName<< endl;
+	cout << " Password    : " << user.Password << endl;
+	cout << " permission  : " << user.permission << endl;
+	printf("=========================================\n\n");
+	system("pause");
 
 }
 bool SearchCliente(vector <sClient>& vClientes, string AccountNumber, int& index)
@@ -231,6 +255,7 @@ bool SearchAndPrintCliente(vector <sClient>& vClientes, int& index)
 	string search;
 	cout << "Enter Account number ? ";
 	cin >> search;
+
 	if (SearchCliente(vClientes, search, index))
 	{
 		PrintClint(vClientes[index]);
@@ -242,6 +267,31 @@ bool SearchAndPrintCliente(vector <sClient>& vClientes, int& index)
 		cout << "Not Found\n";
 		return 0;
 	}
+}
+bool SearchAndPrintUser(vector <sUser>& vUsers, int& index)
+{
+
+	string search;
+	cout << " Enter User Number : ";
+	cin >> search;
+	if (SearchUser(vUsers, search, index))
+	{
+		PrintUser(vUsers[index]);
+		return 1;
+
+	}
+	else
+	{
+		cout << "Not Found\n";
+		return 0;
+	}
+}
+bool SearchAndPrintUser(vector <sUser> & vUsers,bool printNameOfScreen=true)
+{
+	int index;
+	if (PrintNameOfScreen)
+		PrintNameOfScreen("   Find User Screen");
+	return SearchAndPrintUser(vUsers,index);
 }
 bool SearchAndPrintCliente(vector <sClient>& vClientes)
 {
@@ -988,7 +1038,7 @@ sUser ReadLoginUser(vector <sUser>& vUsers)
 void PrintManageUsersMenue()
 {
 	system("cls");
-	ScreenName("Manage Users Screen");
+	PrintNameOfScreen("Manage Users Screen");
 	cout << "\t[1] List Users.\n\t[2] Add New User.\n\t[3] Delete User.\n\t[4] Update User.\n\t[5] Find User.\n\t[6] Main Menue.\n";
 	cout << "=========================================\n";
 
@@ -1016,6 +1066,7 @@ bool ManageUsers()
 		case 4:
 			break;
 		case 5:
+			SearchAndPrintUser(::VUsers, true);
 			break;
 		case 6:
 			return 0;
