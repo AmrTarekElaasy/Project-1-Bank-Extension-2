@@ -8,7 +8,7 @@ using  namespace std;
 
 const string ClientsFileName = "Clients.txt";
 const string UsersFileName = "Users.txt";
-const int encryptionCode = 0, decryptionCode = 0;
+const int encryptionCode = 900, decryptionCode = 900;
 string ClitesComma = "#//#";
 string UsersComma = "#//#";
 
@@ -1192,9 +1192,8 @@ bool Bank()
 	{
 		system("color F");
 		RefreshUsers(::VUsers, UsersFileName);
-
-		::User = ReadLoginUser(::VUsers);
 		RefreshClintes(::VClientes);
+		::User = ReadLoginUser(::VUsers);
 		Menue(::VUsers, ::VClientes);
 	}
 	return 0;
