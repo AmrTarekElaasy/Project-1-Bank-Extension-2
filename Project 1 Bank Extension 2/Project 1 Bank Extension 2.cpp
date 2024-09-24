@@ -634,6 +634,8 @@ void ClearFileUsersAndFileClients(string FileUsersName, string FileClientsName, 
 {
 	if (AreYouSure && AreYouSure2 && AreYouSure3)
 	{
+		FileUsersName.clear();
+		FileClientsName.clear();
 		fstream file,file2;
 		file.open(FileUsersName, ios::out);
 		file2.open(FileClientsName, ios::out);
@@ -1050,8 +1052,8 @@ void FactoryResetWhenAdminIsNotPresent()
 		tempUser.UserName = "Admin";
 		tempUser.Password = "0000";
 		tempUser.permission = enPermission::enAll;
-		::VUsers.push_back(tempUser);
 		SaveStringInFile(ConvertRecordUsersToLineWithEncryption(tempUser),false,::UsersFileName);
+		::VUsers = ReadFileUsersToRecord(::UsersFileName);
 	}
 }
 void ShowMenueScreen()
