@@ -96,9 +96,9 @@ vector <sClient>VClientes;
 void PrintNameOfScreen(string screenName)
 {
 	system("cls");
-	cout << "=========================================\n";
+	cout << "=================================================\n";
 	cout << "\t" << screenName << endl;
-	cout << "=========================================\n";
+	cout << "=================================================\n";
 }
 short ReadShortNumber(string messeg, short from, short to)
 {
@@ -564,8 +564,8 @@ void AddNewUser()
 		{
 			s1 = ConvertRecordUsersToLineWithEncryption(::VUsers.back());
 			SaveStringInFile(s1, 1, ::UsersFileName);
-
-			cout << "Do you nead add more user Y/N ? ";
+			cout << "=================================================\n";
+			cout << "\n Do you nead add more user Y/N ? ";
 			cin >> AddMore;
 		}
 
@@ -1073,9 +1073,10 @@ void DeleteUser()
 void PrintManageUsersMenue()
 {
 	system("cls");
+	system("color 71");
 	PrintNameOfScreen("Manage Users Screen");
 	cout << "\t[1] List Users.\n\t[2] Add New User.\n\t[3] Delete User.\n\t[4] Update User.\n\t[5] Find User.\n\t[6] Main Menue.\n";
-	cout << "=========================================\n";
+	cout << "================================================\n";
 
 }
 bool ManageUsers()
@@ -1097,6 +1098,7 @@ bool ManageUsers()
 			AddNewUser();
 			break;
 		case 3:
+			system("color 74");
 			DeleteUser();
 			break;
 		case 4:
