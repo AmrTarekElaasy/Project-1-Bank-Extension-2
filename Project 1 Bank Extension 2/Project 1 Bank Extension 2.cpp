@@ -276,7 +276,15 @@ bool SearchAndPrintUser(vector <sUser>& vUsers, int& index)
 	cin >> search;
 	if (SearchUser(vUsers, search, index))
 	{
-		PrintUser(vUsers[index]);
+		if (::VUsers[index].UserName == "Admin" && ::User.UserName != "Admin")
+		{
+			std::cout << " This user cannot be shown or edited or deleted.\n";
+			return 0;
+		}
+		else
+		{
+			PrintUser(vUsers[index]);
+		}
 		return 1;
 
 	}
@@ -476,7 +484,7 @@ bool checkPermissionAndPrint(sUser user, enPermission permisson)
 	return false;
 
 }
-short ReadPermission()
+short ReadPermission(string userName)
 {
 	short permissions = 0;
 	string yOrN = "";
@@ -516,14 +524,21 @@ short ReadPermission()
 	if (yOrN == "y" || yOrN == "Y")
 		permissions += enPermission::enTransactions;
 
-	cout << "Do you want to give him permission to Manage Users y/n ? ";
-	cin >> yOrN;
-	if (yOrN == "y" || yOrN == "Y")
+	if (userName == "Admin")
+	{
 		permissions += enPermission::enManageUsers;
+	}
+	else
+	{
+		cout << "Do you want to give him permission to Manage Users y/n ? ";
+		cin >> yOrN;
+		if (yOrN == "y" || yOrN == "Y")
+			permissions += enPermission::enManageUsers;
+	}
 
 	return permissions;
 }
-sUser ReadUser(string userName="")
+sUser ReadUser(string userName = "")
 {
 	sUser user;
 	if (userName == "")
@@ -541,14 +556,14 @@ sUser ReadUser(string userName="")
 	{
 		user.UserName = userName;
 	}
-	
+
 	user.Password = "";
 	while (user.Password == "")
 	{
 		cout << "Enter Password : ";
 		getline(cin >> ws, user.Password);
 	}
-	user.permission = ReadPermission();
+	user.permission = ReadPermission(userName);
 
 	return user;
 
@@ -644,7 +659,10 @@ void PrintClints()
 }
 void ListUsers(vector <sUser>& vUsers)
 {
-	printf("\n                       Users LIST (%d) User(s).                       \n", vUsers.size());
+	int NumberOfUsers = vUsers.size();
+	if (::User.UserName != "Admin")
+	{NumberOfUsers -= 1;}
+	printf("\n                       Users LIST (%d) User(s).                       \n", NumberOfUsers);
 	printf("=====================================================================\n");
 	printf(" User Name                          |Password       | Permission\n");
 	printf("=====================================================================\n");
@@ -653,11 +671,11 @@ void ListUsers(vector <sUser>& vUsers)
 	{
 		if (user.UserName != "")
 		{
-
+			if ((user.UserName == "Admin" && ::User.UserName != "Admin"))
+			{continue;}
 			cout << " " << setw(35) << left << user.UserName << "|";
 			cout << " " << setw(14) << left << user.Password << "|";
 			cout << " " << setw(14) << left << user.permission << "\n";
-
 		}
 
 	}
@@ -728,7 +746,7 @@ void DelateCliente(vector <sClient>& vClientes, string clienteComma, string clie
 	if (SearchAndPrintCliente(vClientes, index))
 	{
 		cout << "\a";
-		cout << "Do you nead delete the cliente Y/N ?";
+		cout << " Do you nead delete the cliente Y/N ?";
 		cin >> YesOrNo;
 		if (YesOrNo == "Y" || YesOrNo == "y")
 		{
@@ -739,7 +757,7 @@ void DelateCliente(vector <sClient>& vClientes, string clienteComma, string clie
 
 	}
 
-	cout << "Press any key to go back to Main Menue...";
+	cout << " Press any key to go back to Main Menue...";
 	system("pause>0");
 
 }
@@ -1060,29 +1078,41 @@ sUser ReadLoginUser(vector <sUser>& vUsers)
 void DeleteUser()
 {
 	int index;
-	string yOrN = "n";
+	string yOrN = "n", userName = "";
 	PrintNameOfScreen("  Delete User Screen ");
-	if (SearchAndPrintUser(::VUsers, index))
+	std::cout << " Enter User Name : ";
+	getline(cin >> ws, userName);
+	if (SearchUser(::VUsers, userName, index))
 	{
-		cout << " Are you shore do you nead Delete this user y/n : ";
-		cin >> yOrN;
-		if (yOrN == "y" || yOrN == "Y")
+		if (::VUsers[index].UserName == "Admin")
 		{
-			::VUsers[index].Delete = true;
-			SaveVectorInFile(vUsersTovStrings(::VUsers), false, ::UsersFileName);
-			::VUsers = ReadFileUsersToRecord(::UsersFileName);
+			std::cout << " This user cannot be shown or edited or deleted.\n";
+		}
+		else
+		{
+			PrintUser(::VUsers[index]);
+			std::cout << " Are you shore do you nead Delete this user y/n : ";
+			cin >> yOrN;
+			if (yOrN == "y" || yOrN == "Y")
+			{
+				::VUsers[index].Delete = true;
+				SaveVectorInFile(vUsersTovStrings(::VUsers), false, ::UsersFileName);
+				::VUsers = ReadFileUsersToRecord(::UsersFileName);
+			}
 		}
 	}
+
 }
 void UpdateUser()
 {
-	string userName="";
+	string userName = "";
 	int index;
-	PrintNameOfScreen("   Update User Screen ");
+	PrintNameOfScreen("\tUpdate User Screen ");
 	if (SearchAndPrintUser(::VUsers, index))
 	{
-		::VUsers[index] = ReadUser(::VUsers[index].UserName);
-		SaveVectorInFile(vUsersTovStrings(::VUsers), false, ::UsersFileName);
+		    ::VUsers[index] = ReadUser(::VUsers[index].UserName);
+			SaveVectorInFile(vUsersTovStrings(::VUsers), false, ::UsersFileName);
+
 	}
 }
 void PrintManageUsersMenue()
@@ -1127,7 +1157,7 @@ bool ManageUsers()
 			break;
 
 		}
-		cout << "Press any key to go back to Manage Users Menue...";
+		cout << " Press any key to go back to Manage Users Menue...";
 		system("pause>0");
 	}
 
