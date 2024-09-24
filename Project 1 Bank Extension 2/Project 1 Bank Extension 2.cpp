@@ -523,10 +523,10 @@ short ReadPermission()
 
 	return permissions;
 }
-sUser ReadUser(bool ReadUserName = true)
+sUser ReadUser(string userName="")
 {
 	sUser user;
-	if (ReadUserName)
+	if (userName == "")
 	{
 		cout << "Enter User Name : ";
 		getline(cin >> ws, user.UserName);
@@ -536,6 +536,10 @@ sUser ReadUser(bool ReadUserName = true)
 			cout << "Enter User Name : ";
 			getline(cin >> ws, user.UserName);
 		}
+	}
+	else
+	{
+		user.UserName = userName;
 	}
 	
 	user.Password = "";
@@ -717,7 +721,7 @@ void DelateCliente(vector <sClient>& vClientes, string clienteComma, string clie
 	string YesOrNo;
 	vector <sClient>::iterator iterClientes = vClientes.begin();
 	system("cls");
-	system("color 40");
+	system("color 74");
 	cout << "-----------------------------------------\n";
 	cout << "\tDelate Clients screen\n";
 	cout << "-----------------------------------------\n";
@@ -1069,7 +1073,17 @@ void DeleteUser()
 		}
 	}
 }
-
+void UpdateUser()
+{
+	string userName="";
+	int index;
+	PrintNameOfScreen("   Update User Screen ");
+	if (SearchAndPrintUser(::VUsers, index))
+	{
+		::VUsers[index] = ReadUser(::VUsers[index].UserName);
+		SaveVectorInFile(vUsersTovStrings(::VUsers), false, ::UsersFileName);
+	}
+}
 void PrintManageUsersMenue()
 {
 	system("cls");
@@ -1102,6 +1116,7 @@ bool ManageUsers()
 			DeleteUser();
 			break;
 		case 4:
+			UpdateUser();
 			break;
 		case 5:
 			SearchAndPrintUser(::VUsers, true);
