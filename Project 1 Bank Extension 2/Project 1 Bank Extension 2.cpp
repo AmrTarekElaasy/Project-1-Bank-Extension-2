@@ -1250,7 +1250,7 @@ bool Bank()
 		system("color F");
 		system("cls");
 		::VUsers = ReadFileUsersToRecord(::UsersFileName);
-		FactoryResetWhenAdminIsNotPresent();
+		//FactoryResetWhenAdminIsNotPresent();
 		::User = ReadLoginUser(::VUsers);
 		::VClients = ReadFileClientsToRecord(::ClientsComma, ::ClientsFileName);
 		Menue(::VUsers, ::VClients);
