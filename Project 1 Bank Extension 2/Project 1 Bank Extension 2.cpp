@@ -790,7 +790,7 @@ void ReadForUpdateClient(sClient& client)
 
 	cout << "Do You Need Edit PinCode Y/N ? ";
 	cin >> YesOrNo;
-	if (YesOrNo == "y" | YesOrNo == "Y")
+	if (YesOrNo == "y" || YesOrNo == "Y")
 	{
 		cout << "Enter PinCode?";
 		getline(cin >> ws, client.PinCode);
@@ -798,7 +798,7 @@ void ReadForUpdateClient(sClient& client)
 
 	cout << "Do You Need Edit Name Y/N ? ";
 	cin >> YesOrNo;
-	if (YesOrNo == "y" | YesOrNo == "Y")
+	if (YesOrNo == "y" || YesOrNo == "Y")
 	{
 		cout << "Enter Name?";
 		getline(cin >> ws, client.Name);
@@ -806,7 +806,7 @@ void ReadForUpdateClient(sClient& client)
 
 	cout << "Do You Need Edit Phone Number Y/N ? ";
 	cin >> YesOrNo;
-	if (YesOrNo == "y" | YesOrNo == "Y")
+	if (YesOrNo == "y" || YesOrNo == "Y")
 	{
 		cout << "Enter Phone?";
 		getline(cin >> ws, client.Phone);
@@ -814,7 +814,7 @@ void ReadForUpdateClient(sClient& client)
 
 	cout << "Do You Need Edit Account Balance Y/N ? ";
 	cin >> YesOrNo;
-	if (YesOrNo == "y" | YesOrNo == "Y")
+	if (YesOrNo == "y" || YesOrNo == "Y")
 	{
 		cout << "Enter Account Balance?";
 		cin >> client.AccountBalance;
@@ -869,7 +869,7 @@ bool ReadAccountNumberAndGetIndex(vector <sClient>& vClients, int& Index)
 		{
 			return 1;
 		}
-	} while (tryAgain == "Y" | tryAgain == "y");
+	} while (tryAgain == "Y" || tryAgain == "y");
 
 	return false;
 }
@@ -902,7 +902,7 @@ void Deposit(vector <sClient>& vClients, string comma, string FileName, int Depo
 			cin >> ToBeSure;
 
 
-			if (ToBeSure == "y" | ToBeSure == "Y")
+			if (ToBeSure == "y" || ToBeSure == "Y")
 			{
 				vClients[Index].AccountBalance += (double)depositAmount;
 				SaveVectorInFile(vClientsTovStrings(vClients, comma), false, FileName);
