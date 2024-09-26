@@ -759,7 +759,7 @@ void DelateClient(vector <sClient>& vClients, string clienteComma, string client
 	string YesOrNo;
 	vector <sClient>::iterator iterClients = vClients.begin();
 	system("cls");
-	system("color 74");
+	system("color 04");
 	cout << "-----------------------------------------\n";
 	cout << "\tDelate Clients Screen\n";
 	cout << "-----------------------------------------\n";
@@ -1064,7 +1064,7 @@ void FactoryResetWhenAdminIsNotPresent()
 void ShowMenueScreen()
 {
 	system("cls");
-	system("color 71");
+	system("color 09");
 
 	cout << "============================================\n";
 	cout << "               Main Menue Screen            \n";
@@ -1145,7 +1145,7 @@ void UpdateUser()
 void PrintManageUsersMenue()
 {
 	system("cls");
-	system("color 71");
+	system("color 09");
 	PrintNameOfScreen("Manage Users Screen");
 	cout << "\t[1] List Users.\n\t[2] Add New User.\n\t[3] Delete User.\n\t[4] Update User.\n\t[5] Find User.\n\t[6] Main Menue.\n";
 	cout << "================================================\n";
@@ -1170,7 +1170,7 @@ bool ManageUsers()
 			AddNewUser();
 			break;
 		case 3:
-			system("color 74");
+			system("color 04");
 			DeleteUser();
 			break;
 		case 4:
