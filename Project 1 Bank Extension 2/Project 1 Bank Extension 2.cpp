@@ -948,7 +948,7 @@ void Withdraw(vector <sClient>& vClients, string comma, string FileName, int Wit
 			getline(cin >> ws, ToBeSure);
 
 
-			if (ToBeSure == "y" | ToBeSure == "Y")
+			if (ToBeSure == "y" || ToBeSure == "Y")
 			{
 
 				vClients[Index].AccountBalance -= withdrawAmount;
